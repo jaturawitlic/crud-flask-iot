@@ -482,6 +482,371 @@ def delete_reading(reading_id):
         flash(f"Server error: {str(e)}", "error")
         return redirect(url_for('list_devices'))
 
+# ========================
+# BASIC CRUD OPERATIONS TO iot_data DATABASE
+# ========================
+
+class IoTDataCRUD:
+    """Basic CRUD operations for iot_data database"""
+    
+    @staticmethod
+    def create_reading(device_id, temperature=None, humidity=None, sensor_data=None):
+        """Create a new reading in the database"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor()
+            query = """
+            INSERT INTO iot_readings (device_id, temperature, humidity, sensor_data)
+            VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(query, (
+                device_id,
+                temperature,
+                humidity,
+                json.dumps(sensor_data) if sensor_data else None
+            ))
+            connection.commit()
+            reading_id = cursor.lastrowid
+            
+            return {
+                "success": True, 
+                "reading_id": reading_id,
+                "message": f"Reading created with ID {reading_id}"
+            }
+            
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+    
+    @staticmethod
+    def read_reading(reading_id):
+        """Read a specific reading from the database"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = "SELECT * FROM iot_readings WHERE id = %s"
+            cursor.execute(query, (reading_id,))
+            reading = cursor.fetchone()
+            
+            if reading:
+                return {"success": True, "reading": reading}
+            else:
+                return {"success": False, "error": "Reading not found"}
+                
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+    
+    @staticmethod
+    def read_all_readings(limit=100, offset=0):
+        """Read all readings from the database with pagination"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get readings with pagination
+            query = """
+            SELECT * FROM iot_readings 
+            ORDER BY timestamp DESC 
+            LIMIT %s OFFSET %s
+            """
+            cursor.execute(query, (limit, offset))
+            readings = cursor.fetchall()
+            
+            # Get total count
+            count_query = "SELECT COUNT(*) as total FROM iot_readings"
+            cursor.execute(count_query)
+            total = cursor.fetchone()['total']
+            
+            return {
+                "success": True,
+                "readings": readings,
+                "total": total,
+                "limit": limit,
+                "offset": offset
+            }
+            
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+    
+    @staticmethod
+    def read_device_readings(device_id, limit=100, offset=0):
+        """Read all readings for a specific device"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get readings for specific device
+            query = """
+            SELECT * FROM iot_readings 
+            WHERE device_id = %s 
+            ORDER BY timestamp DESC 
+            LIMIT %s OFFSET %s
+            """
+            cursor.execute(query, (device_id, limit, offset))
+            readings = cursor.fetchall()
+            
+            # Get total count for this device
+            count_query = "SELECT COUNT(*) as total FROM iot_readings WHERE device_id = %s"
+            cursor.execute(count_query, (device_id,))
+            total = cursor.fetchone()['total']
+            
+            return {
+                "success": True,
+                "device_id": device_id,
+                "readings": readings,
+                "total": total,
+                "limit": limit,
+                "offset": offset
+            }
+            
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+    
+    @staticmethod
+    def update_reading(reading_id, device_id=None, temperature=None, humidity=None, sensor_data=None):
+        """Update an existing reading in the database"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor()
+            
+            # Check if reading exists
+            cursor.execute("SELECT id FROM iot_readings WHERE id = %s", (reading_id,))
+            if not cursor.fetchone():
+                return {"success": False, "error": "Reading not found"}
+            
+            # Build dynamic update query
+            update_parts = []
+            params = []
+            
+            if device_id is not None:
+                update_parts.append("device_id = %s")
+                params.append(device_id)
+            if temperature is not None:
+                update_parts.append("temperature = %s")
+                params.append(temperature)
+            if humidity is not None:
+                update_parts.append("humidity = %s")
+                params.append(humidity)
+            if sensor_data is not None:
+                update_parts.append("sensor_data = %s")
+                params.append(json.dumps(sensor_data))
+            
+            if not update_parts:
+                return {"success": False, "error": "No fields to update"}
+            
+            query = f"UPDATE iot_readings SET {', '.join(update_parts)} WHERE id = %s"
+            params.append(reading_id)
+            
+            cursor.execute(query, params)
+            connection.commit()
+            
+            return {
+                "success": True,
+                "message": f"Reading {reading_id} updated successfully",
+                "rows_affected": cursor.rowcount
+            }
+            
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+    
+    @staticmethod
+    def delete_reading(reading_id):
+        """Delete a reading from the database"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor()
+            
+            # Check if reading exists first
+            cursor.execute("SELECT id FROM iot_readings WHERE id = %s", (reading_id,))
+            if not cursor.fetchone():
+                return {"success": False, "error": "Reading not found"}
+            
+            # Delete the reading
+            query = "DELETE FROM iot_readings WHERE id = %s"
+            cursor.execute(query, (reading_id,))
+            connection.commit()
+            
+            return {
+                "success": True,
+                "message": f"Reading {reading_id} deleted successfully",
+                "rows_affected": cursor.rowcount
+            }
+            
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+    
+    @staticmethod
+    def delete_device_readings(device_id):
+        """Delete all readings for a specific device"""
+        connection = get_db_connection()
+        if not connection:
+            return {"success": False, "error": "Database connection failed"}
+        
+        try:
+            cursor = connection.cursor()
+            
+            # Count readings before deletion
+            cursor.execute("SELECT COUNT(*) as count FROM iot_readings WHERE device_id = %s", (device_id,))
+            count = cursor.fetchone()[0]
+            
+            if count == 0:
+                return {"success": False, "error": f"No readings found for device {device_id}"}
+            
+            # Delete all readings for the device
+            query = "DELETE FROM iot_readings WHERE device_id = %s"
+            cursor.execute(query, (device_id,))
+            connection.commit()
+            
+            return {
+                "success": True,
+                "message": f"Deleted {count} readings for device {device_id}",
+                "rows_affected": cursor.rowcount
+            }
+            
+        except Error as e:
+            return {"success": False, "error": f"Database error: {str(e)}"}
+        finally:
+            cursor.close()
+            connection.close()
+
+# ========================
+# CRUD API ENDPOINTS
+# ========================
+
+@app.route('/api/crud/reading', methods=['POST'])
+def api_create_reading():
+    """API endpoint to create a new reading"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+        
+        result = IoTDataCRUD.create_reading(
+            device_id=data.get('device_id'),
+            temperature=data.get('temperature'),
+            humidity=data.get('humidity'),
+            sensor_data=data.get('sensor_data')
+        )
+        
+        status_code = 201 if result['success'] else 400
+        return jsonify(result), status_code
+        
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/crud/reading/<int:reading_id>', methods=['GET'])
+def api_read_reading(reading_id):
+    """API endpoint to read a specific reading"""
+    try:
+        result = IoTDataCRUD.read_reading(reading_id)
+        status_code = 200 if result['success'] else 404
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/crud/readings', methods=['GET'])
+def api_read_all_readings():
+    """API endpoint to read all readings with pagination"""
+    try:
+        limit = request.args.get('limit', 100, type=int)
+        offset = request.args.get('offset', 0, type=int)
+        
+        result = IoTDataCRUD.read_all_readings(limit=limit, offset=offset)
+        status_code = 200 if result['success'] else 500
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/crud/device/<device_id>/readings', methods=['GET'])
+def api_read_device_readings(device_id):
+    """API endpoint to read all readings for a specific device"""
+    try:
+        limit = request.args.get('limit', 100, type=int)
+        offset = request.args.get('offset', 0, type=int)
+        
+        result = IoTDataCRUD.read_device_readings(device_id, limit=limit, offset=offset)
+        status_code = 200 if result['success'] else 500
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/crud/reading/<int:reading_id>', methods=['PUT'])
+def api_update_reading(reading_id):
+    """API endpoint to update a specific reading"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+        
+        result = IoTDataCRUD.update_reading(
+            reading_id=reading_id,
+            device_id=data.get('device_id'),
+            temperature=data.get('temperature'),
+            humidity=data.get('humidity'),
+            sensor_data=data.get('sensor_data')
+        )
+        
+        status_code = 200 if result['success'] else 400
+        return jsonify(result), status_code
+        
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/crud/reading/<int:reading_id>', methods=['DELETE'])
+def api_delete_reading(reading_id):
+    """API endpoint to delete a specific reading"""
+    try:
+        result = IoTDataCRUD.delete_reading(reading_id)
+        status_code = 200 if result['success'] else 404
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/crud/device/<device_id>', methods=['DELETE'])
+def api_delete_device_readings(device_id):
+    """API endpoint to delete all readings for a specific device"""
+    try:
+        result = IoTDataCRUD.delete_device_readings(device_id)
+        status_code = 200 if result['success'] else 404
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 if __name__ == '__main__':
     # Initialize database on startup
     init_database()
