@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for basic CRUD operations to iot_data database
+Test script for basic CRUD operations to std01_iot_data database
 Run this script to test all CRUD functionality
 """
 
@@ -32,7 +32,7 @@ def print_response(response, operation):
 def test_crud_operations():
     """Test all CRUD operations"""
     
-    print_section("TESTING BASIC CRUD OPERATIONS TO iot_data DATABASE")
+    print_section("TESTING BASIC CRUD OPERATIONS TO std01_iot_data DATABASE")
     
     # ========================
     # CREATE - Add new readings

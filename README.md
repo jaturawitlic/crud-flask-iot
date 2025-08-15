@@ -15,7 +15,7 @@ A Flask-based REST API for collecting data from IoT devices using MicroPython, w
 The application connects to your MySQL database with the following configuration:
 - **Host**: 61.19.114.86:54000
 - **User**: nathee
-- **Database**: iot_data
+- **Database**: std01_iot_data
 
 ## API Endpoints
 

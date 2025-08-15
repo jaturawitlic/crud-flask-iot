@@ -1,6 +1,6 @@
-# Basic CRUD Operations for iot_data Database
+# Basic CRUD Operations for std01_iot_data Database
 
-This document shows how to perform basic CRUD (Create, Read, Update, Delete) operations on the `iot_data` database.
+This document shows how to perform basic CRUD (Create, Read, Update, Delete) operations on the `std01_iot_data` database.
 
 ## Database Structure
 
@@ -305,7 +305,7 @@ You can also perform CRUD operations through the web interface:
 All operations use the configured MySQL connection:
 - **Host:** 61.19.114.86:54000
 - **User:** nathee
-- **Database:** iot_data
+- **Database:** std01_iot_data
 
 The system automatically handles:
 - Database connection management

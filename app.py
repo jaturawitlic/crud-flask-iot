@@ -12,9 +12,9 @@ app.secret_key = 'your-secret-key-change-in-production'
 DB_CONFIG = {
     'host': '61.19.114.86',
     'port': 54000,
-    'user': 'nathee',
-    'password': 'Root@1234',
-    'database': 'iot_data'  # You may need to create this database
+    'user': 'std01',
+    'password': 'std01',
+    'database': 'std01_iot_data'  # You may need to create this database
 }
 
 def get_db_connection():
@@ -35,8 +35,8 @@ def init_database():
             cursor = connection.cursor()
             
             # Create database if it doesn't exist
-            cursor.execute("CREATE DATABASE IF NOT EXISTS iot_data")
-            cursor.execute("USE iot_data")
+            cursor.execute("CREATE DATABASE IF NOT EXISTS std01_iot_data")
+            cursor.execute("USE std01_iot_data")
             
             # Create iot_readings table
             create_table_query = """
@@ -75,7 +75,7 @@ def api_home():
     })
 
 @app.route('/api/data', methods=['POST'])
-def receive_iot_data():
+def receive_std01_iot_data():
     """
     Endpoint to receive data from IoT devices
     Expected JSON format:
@@ -483,11 +483,11 @@ def delete_reading(reading_id):
         return redirect(url_for('list_devices'))
 
 # ========================
-# BASIC CRUD OPERATIONS TO iot_data DATABASE
+# BASIC CRUD OPERATIONS TO std01_iot_data DATABASE
 # ========================
 
 class IoTDataCRUD:
-    """Basic CRUD operations for iot_data database"""
+    """Basic CRUD operations for std01_iot_data database"""
     
     @staticmethod
     def create_reading(device_id, temperature=None, humidity=None, sensor_data=None):
