@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Error - IoT Data Management{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Error</h4>
+    <p>{{ error }}</p>
+    <hr>
+    <p class="mb-0">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Go Home</a>
+        <a href="{{ url_for('list_devices') }}" class="btn btn-outline-primary">View Devices</a>
+    </p>
+</div>
+{% endblock %}

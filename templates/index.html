@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Home - IoT Data Management{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded-lg">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">IoT Data Management System</h1>
+        <p class="col-md-8 fs-4">Welcome to the IoT Data Collection and Management system. This platform allows you to manage sensor data from your IoT devices with full CRUD operations.</p>
+        
+        <div class="row mt-5">
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📱 View Devices</h5>
+                        <p class="card-text">Browse all registered IoT devices and their status</p>
+                        <a href="{{ url_for('list_devices') }}" class="btn btn-primary">View Devices</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">➕ Add Reading</h5>
+                        <p class="card-text">Manually create new sensor readings</p>
+                        <a href="{{ url_for('create_reading') }}" class="btn btn-success">Add Reading</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🔌 API Access</h5>
+                        <p class="card-text">Access the REST API for programmatic integration</p>
+                        <a href="{{ url_for('api_home') }}" class="btn btn-info">API Info</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">💚 Health Check</h5>
+                        <p class="card-text">Check system and database connectivity</p>
+                        <a href="{{ url_for('health_check') }}" class="btn btn-outline-success">Check Health</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <h3>Features</h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Create:</strong> Add new sensor readings manually</li>
+            <li class="list-group-item"><strong>Read:</strong> View device data and readings</li>
+            <li class="list-group-item"><strong>Update:</strong> Edit existing readings</li>
+            <li class="list-group-item"><strong>Delete:</strong> Remove unwanted readings</li>
+            <li class="list-group-item"><strong>REST API:</strong> Programmatic access for IoT devices</li>
+        </ul>
+    </div>
+    
+    <div class="col-md-6">
+        <h3>API Endpoints</h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><code>POST /api/data</code> - Receive IoT data</li>
+            <li class="list-group-item"><code>GET /api/data/&lt;device_id&gt;</code> - Get device readings</li>
+            <li class="list-group-item"><code>GET /api/health</code> - Health check</li>
+            <li class="list-group-item"><code>GET /api</code> - API information</li>
+        </ul>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h4 class="alert-heading">Getting Started</h4>
+            <p>Your IoT devices can send data to <code>POST /api/data</code> endpoint. The system automatically creates the database structure and manages all sensor data efficiently.</p>
+            <hr>
+            <p class="mb-0">For MicroPython devices, check the <code>micropython_client.py</code> example in your project directory.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
