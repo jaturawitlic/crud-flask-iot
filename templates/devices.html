@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Devices - IoT Data Management{% endblock %}
+{% block title %}อุปกรณ์ - ระบบจัดการข้อมูล IoT{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">IoT Devices</h1>
+    <h1 class="h2">อุปกรณ์ IoT</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
-            <a href="{{ url_for('create_reading') }}" class="btn btn-sm btn-success">Add Reading</a>
+            <a href="{{ url_for('create_reading') }}" class="btn btn-sm btn-success">เพิ่มข้อมูล</a>
         </div>
     </div>
 </div>
@@ -19,28 +19,28 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ device.device_id }}</h5>
-                    <span class="badge bg-primary">{{ device.total_readings }} readings</span>
+                    <span class="badge bg-primary">{{ device.total_readings }} ครั้ง</span>
                 </div>
                 <div class="card-body">
                     <p class="card-text">
-                        <strong>Last Seen:</strong><br>
-                        <small class="text-muted">{{ device.last_seen.strftime('%Y-%m-%d %H:%M:%S') if device.last_seen else 'Never' }}</small>
+                        <strong>ติดต่อล่าสุด:</strong><br>
+                        <small class="text-muted">{{ device.last_seen.strftime('%Y-%m-%d %H:%M:%S') if device.last_seen else 'ยังไม่เคย' }}</small>
                     </p>
                     
                     {% if device.avg_temperature %}
                     <p class="card-text">
-                        <strong>Avg Temperature:</strong> {{ "%.1f"|format(device.avg_temperature) }}°C
+                        <strong>อุณหภูมิเฉลี่ย:</strong> {{ "%.1f"|format(device.avg_temperature) }}°C
                     </p>
                     {% endif %}
                     
                     {% if device.avg_humidity %}
                     <p class="card-text">
-                        <strong>Avg Humidity:</strong> {{ "%.1f"|format(device.avg_humidity) }}%
+                        <strong>ความชื้นเฉลี่ย:</strong> {{ "%.1f"|format(device.avg_humidity) }}%
                     </p>
                     {% endif %}
                 </div>
                 <div class="card-footer">
-                    <a href="{{ url_for('view_device', device_id=device.device_id) }}" class="btn btn-primary btn-sm">View Details</a>
+                    <a href="{{ url_for('view_device', device_id=device.device_id) }}" class="btn btn-primary btn-sm">ดูรายละเอียด</a>
                 </div>
             </div>
         </div>
@@ -48,11 +48,11 @@
     </div>
 {% else %}
     <div class="alert alert-info">
-        <h4 class="alert-heading">No Devices Found</h4>
-        <p>No IoT devices have sent data yet. Your devices can start sending data to the API endpoint:</p>
+        <h4 class="alert-heading">ไม่พบอุปกรณ์</h4>
+        <p>ยังไม่มีอุปกรณ์ IoT ส่งข้อมูลมา อุปกรณ์ของคุณสามารถเริ่มส่งข้อมูลไปยังจุดเชื่อมต่อ API:</p>
         <hr>
         <p class="mb-0"><code>POST /api/data</code></p>
-        <p class="mt-2">Or you can <a href="{{ url_for('create_reading') }}">manually add a reading</a> to get started.</p>
+        <p class="mt-2">หรือคุณสามารถ <a href="{{ url_for('create_reading') }}">เพิ่มข้อมูลด้วยตนเอง</a> เพื่อเริ่มต้น</p>
     </div>
 {% endif %}
 {% endblock %}

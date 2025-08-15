@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Error - IoT Data Management{% endblock %}
+{% block title %}ข้อผิดพลาด - ระบบจัดการข้อมูล IoT{% endblock %}
 
 {% block content %}
 <div class="alert alert-danger">
-    <h4 class="alert-heading">Error</h4>
+    <h4 class="alert-heading">เกิดข้อผิดพลาด</h4>
     <p>{{ error }}</p>
     <hr>
     <p class="mb-0">
-        <a href="{{ url_for('home') }}" class="btn btn-primary">Go Home</a>
-        <a href="{{ url_for('list_devices') }}" class="btn btn-outline-primary">View Devices</a>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">ไปหน้าแรก</a>
+        <a href="{{ url_for('list_devices') }}" class="btn btn-outline-primary">ดูอุปกรณ์</a>
     </p>
 </div>
 {% endblock %}

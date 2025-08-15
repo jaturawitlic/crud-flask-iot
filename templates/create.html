@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Add Reading - IoT Data Management{% endblock %}
+{% block title %}เพิ่มข้อมูล - ระบบจัดการข้อมูล IoT{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Add New Reading</h1>
+    <h1 class="h2">เพิ่มข้อมูลใหม่</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
-            <a href="{{ url_for('list_devices') }}" class="btn btn-sm btn-outline-primary">← Back to Devices</a>
+            <a href="{{ url_for('list_devices') }}" class="btn btn-sm btn-outline-primary">← กลับไปที่อุปกรณ์</a>
         </div>
     </div>
 </div>
@@ -16,39 +16,39 @@
     <div class="col-md-8">
         <form method="POST" action="{{ url_for('create_reading') }}">
             <div class="mb-3">
-                <label for="device_id" class="form-label">Device ID <span class="text-danger">*</span></label>
+                <label for="device_id" class="form-label">รหัสอุปกรณ์ <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="device_id" name="device_id" required 
-                       placeholder="e.g., esp32_001, sensor_room_01">
-                <div class="form-text">Unique identifier for your IoT device</div>
+                       placeholder="เช่น esp32_001, sensor_room_01">
+                <div class="form-text">ตัวระบุเฉพาะสำหรับอุปกรณ์ IoT ของคุณ</div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="temperature" class="form-label">Temperature (°C)</label>
+                        <label for="temperature" class="form-label">อุณหภูมิ (°C)</label>
                         <input type="number" step="0.1" class="form-control" id="temperature" name="temperature" 
-                               placeholder="e.g., 23.5">
+                               placeholder="เช่น 23.5">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="humidity" class="form-label">Humidity (%)</label>
+                        <label for="humidity" class="form-label">ความชื้น (%)</label>
                         <input type="number" step="0.1" class="form-control" id="humidity" name="humidity" 
-                               placeholder="e.g., 65.2">
+                               placeholder="เช่น 65.2">
                     </div>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="sensor_data" class="form-label">Additional Sensor Data (JSON)</label>
+                <label for="sensor_data" class="form-label">ข้อมูลเซนเซอร์เพิ่มเติม (JSON)</label>
                 <textarea class="form-control" id="sensor_data" name="sensor_data" rows="4" 
                           placeholder='{"light": 750, "pressure": 1013.25, "motion": false}'>{}</textarea>
-                <div class="form-text">Optional JSON object with additional sensor readings</div>
+                <div class="form-text">วัตถุ JSON ที่เป็นทางเลือกพร้อมข้อมูลเซนเซอร์เพิ่มเติม</div>
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-success">Create Reading</button>
-                <a href="{{ url_for('list_devices') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-success">สร้างข้อมูล</button>
+                <a href="{{ url_for('list_devices') }}" class="btn btn-secondary">ยกเลิก</a>
             </div>
         </form>
     </div>
@@ -56,21 +56,21 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h5>📝 Tips</h5>
+                <h5>📝 คำแนะนำ</h5>
             </div>
             <div class="card-body">
                 <ul class="list-unstyled">
-                    <li><strong>Device ID:</strong> Use a consistent naming convention for your devices</li>
-                    <li><strong>Temperature:</strong> Values in Celsius (e.g., 23.5)</li>
-                    <li><strong>Humidity:</strong> Percentage values (e.g., 65.2)</li>
-                    <li><strong>Sensor Data:</strong> Valid JSON format for additional sensors</li>
+                    <li><strong>รหัสอุปกรณ์:</strong> ใช้รูปแบบการตั้งชื่อที่สม่ำเสมอสำหรับอุปกรณ์ของคุณ</li>
+                    <li><strong>อุณหภูมิ:</strong> ค่าในหน่วยเซลเซียส (เช่น 23.5)</li>
+                    <li><strong>ความชื้น:</strong> ค่าเปอร์เซ็นต์ (เช่น 65.2)</li>
+                    <li><strong>ข้อมูลเซนเซอร์:</strong> รูปแบบ JSON ที่ถูกต้องสำหรับเซนเซอร์เพิ่มเติม</li>
                 </ul>
             </div>
         </div>
         
         <div class="card mt-3">
             <div class="card-header">
-                <h5>📄 Example JSON</h5>
+                <h5>📄 ตัวอย่าง JSON</h5>
             </div>
             <div class="card-body">
                 <pre><code>{
